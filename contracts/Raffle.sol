@@ -3,6 +3,7 @@
 pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
 error Raffle_NotEnoughETHEntered();
 
@@ -10,15 +11,25 @@ contract Raffle is VRFConsumerBaseV2 {
 
     uint256 private immutable i_entranceFee;
     address payable[] private s_players;
+    VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
+    bytes32 private immutable i_keyHash;
+    uint64 private immutable i_subscriptionId;
+    uint32 private immutable i_callbackGasLimit;
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
+    uint32 private constant NUM_WORDS = 1;
 
     event LogPlayerEntered(address indexed player, uint256 amount);
 
-    constructor(uint256 entranceFee, address vrfCoordinatorv2) VRFConsumerBaseV2(vrfCoordinatorv2) {
+    constructor(uint256 entranceFee, address vrfCoordinatorv2, bytes32 keyHash, uint64 subscriptionId, uint32 callbackGasLimit ) VRFConsumerBaseV2(vrfCoordinatorv2) {
         i_entranceFee = entranceFee;
+        i_keyHash = keyHash;
+        i_subscriptionId = subscriptionId;
+        i_callbackGasLimit = callbackGasLimit;
     }
 
     function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
+        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorv2);
     }
 
    function enterRaffle() public payable {
@@ -31,6 +42,13 @@ contract Raffle is VRFConsumerBaseV2 {
    }
 
    function pickRandomWinner() external {
+    i_vrfCoordinator.requestRandomWords(
+      i_keyHash,
+      i_subscriptionId,
+      REQUEST_CONFIRMATIONS,
+      i_callbackGasLimit,
+      NUM_WORDS
+    );
    
    }
 
