@@ -1,0 +1,7 @@
+{
+  "name": "smart-contract-lottery",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "royvardhan <royvardhan.official@gmail.com>",
+  "license": "MIT"
+}
