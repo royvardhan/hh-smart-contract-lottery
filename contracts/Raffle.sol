@@ -25,11 +25,12 @@ contract Raffle is VRFConsumerBaseV2 {
         i_keyHash = keyHash;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
+        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorv2);
     }
 
     function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorv2);
+        
     }
 
    function enterRaffle() public payable {
